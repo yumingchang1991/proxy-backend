@@ -1,11 +1,20 @@
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
 import express from 'express'
+import axios from 'axios'
 
 const app: express.Application = express()
 
-const port: number = 3000
+const PORT: number = 3000
+const BASE_URL: string = 'http://api.marketstack.com/v1/'
 
+// Marketstack API: https://marketstack.com/documentation
+// End-of-day Data & Historical Data
+
+// /api/:symbol/
 app.get('/', (req, res) => {
-  res.send('TS Express Server is on!')
+  res.send('it is working!')
 })
 
-app.listen(port, () => console.log('listening on port: ' + port))
+app.listen(PORT, () => console.log(`listening on port: ${PORT}`))
