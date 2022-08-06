@@ -2,10 +2,10 @@
   "name": "backend",
   "version": "1.0.0",
   "description": "",
-  "main": "build/app.js",
+  "main": "app.js",
   "scripts": {
     "build": "tsc",
-    "start": "node build/app.js",
+    "start": "node app.js",
     "dev": "nodemon app.ts"
   },
   "keywords": [],
