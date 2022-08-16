@@ -14,7 +14,6 @@ app.use(express.urlencoded({ extended: true }))
 // Marketstack API: https://marketstack.com/documentation
 // End-of-day Data & Historical Data
 
-// /api/:symbol/
 app.use(router)
 
 app.listen(PORT, () => console.log(`listening on port: ${PORT}`))

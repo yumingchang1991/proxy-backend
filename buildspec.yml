@@ -16,4 +16,3 @@ artifacts:
     - package.json
     - package-lock.json
     - 'build/**/*'
-  discard-paths: yes
