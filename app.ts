@@ -2,7 +2,6 @@ if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config()
 }
 import express from 'express'
-import axios from 'axios'
 import cors from 'cors'
 import router from './routes/index'
 
