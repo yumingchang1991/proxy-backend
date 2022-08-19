@@ -11,7 +11,10 @@ urlEodLatest.searchParams.set('access_key', process.env.MARKETSTACK_API_KEY || '
 eodRouter.route('/').post((req, res, next) => {
   const { symbol } = req.body
   urlEodLatest.searchParams.set('symbol', symbol || 'VTI')
-  console.log(urlEodLatest.href)
+  res.json({
+    status: "success",
+    message: "Your request reached AWS server with stock symbol: " + symbol
+  })
   // axios
   //   .get(urlEodLatest.href)
   //   .then(marketstackResponse => {
