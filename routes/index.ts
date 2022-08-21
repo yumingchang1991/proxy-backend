@@ -1,12 +1,28 @@
+if (process.env.NODE_ENV !== 'production') require('dotenv').config()
 import express, { Router } from 'express'
 import apicache from 'apicache'
-import eodRouter from './modules/eod'
+import axios from 'axios'
+import cors from 'cors'
 
-const router:Router = express.Router()
+const router: Router = express.Router()
 
-router.use('/eod/latest', apicache.middleware('60 minutes'), eodRouter)
-router.use('/', (req, res, next) => {
-  res.json('this is root path!')
+const urlEodLatest = new URL(process.env.MARKETSTACK_BASE_URL || '')
+urlEodLatest.pathname = 'v1/eod/latest'
+urlEodLatest.searchParams.set('access_key', process.env.MARKETSTACK_API_KEY || '')
+
+router.route('/:etf/eod').options(cors({ origin: process.env.CLIENT_ORIGIN }))
+router.route('/:etf/eod').get(apicache.middleware('60 minutes'), (req, res, next) => {
+  const { etf } = req.params
+  urlEodLatest.searchParams.set('symbols', etf)
+  axios
+    .get(urlEodLatest.href)
+    .then(marketstackResponse => {
+      const { data } = marketstackResponse
+      res.json(data.data)
+    })
+    .catch(err => {
+      console.log(err)
+    })
 })
 
 export = router
