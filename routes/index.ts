@@ -17,8 +17,9 @@ router.route('/:etf/eod').get(apicache.middleware('60 minutes'), (req, res, next
   axios
     .get(urlEodLatest.href)
     .then(marketstackResponse => {
-      const { data } = marketstackResponse
-      res.json(data.data)
+      const { date, symbol, close, dividend } = marketstackResponse.data.data[0]
+      const result = { date, symbol, close, dividend }
+      res.json(result)
     })
     .catch(err => {
       console.log(err)

@@ -16,10 +16,6 @@ app.use(express.urlencoded({ extended: true }))
 // Marketstack API: https://marketstack.com/documentation
 // End-of-day Data & Historical Data
 
-app.get('/ip', (req, res) => {
-  res.send(req.ip)
-})
-
 const apiLimiter = rateLimit({
   windowMs: 20 * 60 * 1000,
   max: 30
