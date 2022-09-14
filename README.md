@@ -20,6 +20,8 @@ By setting up this server, I wrote an article on Medium sharing [the 3 steps to 
 
 - TypeScript
 - Express
+- MongoDB Atalas & Mongoose
+- JSON Web Token
 - apicache
 - express-rate-limit
 - axios
@@ -32,9 +34,18 @@ By setting up this server, I wrote an article on Medium sharing [the 3 steps to 
 
 # Backend Description
 
-It is a simple proxy server that hides the access token to Marketstack, caches responses, and limit api call rate.
+It is a simple proxy & user authentication server that hides the access token to third party, caches responses, and limit api call rate.
 
 This repo is connected to AWS CodeBuild, so each time there is a change in repo, it will automatically compile typescript, and deploy this application to AWS EC2.
+
+# Backend Route
+| Method | Route                       | Desciption                                        |
+| ------ | --------------------------- | ------------------------------------------------- |
+| POST   | `/api/auth/login`           | verify user credentials                           |
+| GET    | `/api/auth/refresh`         | refresh JWT                                       |
+| GET    | `/api/auth/logout`          | log out current user and clear access token       |
+| POST   | `/api/users`                | register a new member in MongoDB                  |
+| GET    | `/api/:etf/eod`             | return end of day price for a single ETF          |
 
 # Repo Navigation
 [to Frontend Repo](https://github.com/yumingchang1991/proxy-frontend)
