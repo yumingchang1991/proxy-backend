@@ -12,8 +12,10 @@ const verifyJWT = (req: Request, res: Response, next: NextFunction) => {
   console.log('this request is going through verifyJWT')
   try {
     const authHeader = req.headers.authorization
+    console.log('authHeader: ', authHeader)
     if (!authHeader) return res.json({ status: 'error', message: 'no valid token'})
     const token = authHeader.split(' ')[1]
+    console.log('token: ', token)
     // this line returns payload object with signature if no error
     // if there is error, try/catch will catch them
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET as string)
@@ -26,7 +28,7 @@ const verifyJWT = (req: Request, res: Response, next: NextFunction) => {
     console.log('verifyJWT, req.user: ', req.user)
     next()
   } catch (err) {
-    if (err) return res.json({ status: 'error', message: 'token is extracted but considered manipulated' })
+    return res.json({ status: 'error', message: 'token is extracted but considered manipulated' })
   }
 }
 
