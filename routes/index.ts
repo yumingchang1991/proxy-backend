@@ -5,7 +5,6 @@ import configCORS from '../config/cors'
 import usersRoute from './api/users'
 import authRoute from './api/auth'
 import etfRoute from './api/etf'
-import verifyJWT from '../middlewares/verifyJWT'
 
 const router: Router = express.Router()
 
@@ -17,8 +16,6 @@ configCORS(router)
 router.use('/api/users', usersRoute)
 router.use('/api/auth', authRoute)
 
-router.use(verifyJWT)
 router.use('/api', etfRoute)
-
 
 export = router
