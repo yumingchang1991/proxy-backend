@@ -1,11 +1,14 @@
+import { CookieOptions } from "express"
+
+const authRefreshToken: CookieOptions = {
+  httpOnly: true,
+  maxAge: 24 * 60 * 60 * 1000,
+  secure: true,
+  sameSite: 'none'
+}
+
 const cookiesOption = {
-  authRefreshToken: {
-    httpOnly: true,
-    maxAge: 24 * 60 * 60 * 1000,
-    secure: true,
-    sameSite: 'None'
-    // 1 day in milliseconds
-  }
+  authRefreshToken
 }
 
 export default cookiesOption
