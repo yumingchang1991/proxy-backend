@@ -45,6 +45,7 @@ This repo is connected to AWS CodeBuild, so each time there is a change in repo,
 | GET    | `/api/auth/refresh`         | refresh JWT                                       |
 | GET    | `/api/auth/logout`          | log out current user and clear access token       |
 | POST   | `/api/users`                | register a new member in MongoDB                  |
+| POST   | `/api/symbols`              | upload csv or txt file to set allowed ETF Symbol  |
 | GET    | `/api/:etf/eod`             | return end of day price for a single ETF          |
 
 # Repo Navigation
