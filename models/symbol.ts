@@ -18,6 +18,9 @@ const symbolSchema: Schema = new Schema({
   symbol: {
     type: String,
     required: true,
+    index: {
+      unique: true
+    },
     trim: true
   },
   name: {
