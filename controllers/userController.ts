@@ -1,19 +1,16 @@
 import User from '../models/user'
 import bcrypt from 'bcryptjs'
 import { Request, Response, NextFunction } from 'express'
+import resHelpers from '../helpers/resHelpers'
 
 const userController = {
   async postUser (req: Request, res: Response, next: NextFunction) {
     try {
       const { username, account, password } = req.body
-      console.log(req.body)
       if (username && account && password) {
         const user = await User.findOne({ account })
         if (user) {
-          return res.json({
-            status: 'error',
-            message: `${account} already exists ... pick another account`
-          })
+          return resHelpers.sendErrorJson(res, `${account} already exists ... pick another account`)
         }
         const HASH = bcrypt.genSaltSync(10)
         const newUser = await User.create({
@@ -27,16 +24,12 @@ const userController = {
             data: newUser.toJSON()
           })
         }
-        return res.json({
-          status: 'error',
-          message: 'something wrong, new User is not created.'
-        })
+        return resHelpers.sendErrorJson(res, 'something wrong, new User is not created')
       }
     } catch (e) {
-      return res.json({
-        status: 'error',
-        message: e
-      })
+      if (e instanceof Error) {
+        return resHelpers.sendErrorJson(res, e.message)
+      }
     }
   }
 }

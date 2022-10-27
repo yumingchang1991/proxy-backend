@@ -5,6 +5,8 @@ import jwt from 'jsonwebtoken'
 import User from '../models/user'
 import jwtOptions from '../config/jwt'
 import cookieOptions from '../config/cookies'
+import resHelpers from '../helpers/resHelpers'
+import errorHandler from '../middlewares/errorHandlers'
 
 interface iUserPayload {
   username: string,
@@ -14,47 +16,30 @@ interface iUserPayload {
 const authController = {
   handleLogIn(req: Request, res: Response, next: NextFunction) {
     const { account, password } = req.body
-    if (!account && !password) {
-      res.header('Access-Control-Allow-Credentials', 'true')
-      return res.json({
-        status: 'error',
-        message: 'missing account and password'
-      })
+
+    try {
+      if (!account && !password) throw Error('missing account and password')
+      if (!account) throw Error('missing account')
+      if (!password) throw Error('missing password')
+    } catch (err: unknown) {
+      return errorHandler.general(res, err)
     }
-    if (!account) {
-      res.header('Access-Control-Allow-Credentials', 'true')
-      return res.json({
-        status: 'error',
-        message: 'missing account'
-      })
-    }
-    if (!password) {
-      res.header('Access-Control-Allow-Credentials', 'true')
-      return res.json({
-        status: 'error',
-        message: 'missing password'
-      })
-    }
+    
+
     User
       .findOne({ account })
       .then(user => {
-        if (!user) {
-          res.header('Access-Control-Allow-Credentials', 'true')
-          return res.json({
-            status: 'error',
-            message: `account is not valid`
-          })
+        
+        try {
+          if (!user) throw Error('account is not valid')
+          if (!user.comparePassword(password)) throw Error('password is not valid')
+        } catch (err: unknown) {
+          return errorHandler.general(res, err)
         }
-        if (!user.comparePassword(password)) {
-          res.header('Access-Control-Allow-Credentials', 'true')
-          return res.json({
-            status: 'error',
-            message: `password is not valid`
-          })
-        }
+
         const userPayload = {
-          username: user.username,
-          account: user.account
+          username: user?.username,
+          account: user?.account
         }
         const accessToken = jwt.sign(
           userPayload,
@@ -66,22 +51,22 @@ const authController = {
           process.env.REFRESH_TOKEN_SECRET as string,
           jwtOptions.refreshTokenOptions
         )
-        res.header('Access-Control-Allow-Credentials', 'true')
+        resHelpers.setHeaders(res)
         res.cookie('jwt', refreshToken, cookieOptions.authRefreshToken)
-        res.json({
+        return res.json({
           status: 'success',
-          username: user.username,
+          username: user?.username,
           accessToken })
       })
-      .catch(e => {
-        next(e)
+      .catch(err => {
+        return errorHandler.general(res, err)
       })
 
   },
   handleRefreshToken(req: Request, res: Response, next: NextFunction) {
     try {
       const cookies = req.cookies
-      if (!cookies?.jwt) return res.json({ status: 'error', message: 'no access token' })
+      if (!cookies?.jwt) throw Error('no access token')
       const refreshToken = cookies.jwt
       jwt.verify(refreshToken, process.env.ACCESS_TOKEN_SECRET as string)
       const decodedToken = jwt.decode(refreshToken) as iUserPayload
@@ -89,30 +74,25 @@ const authController = {
         .findOne({ account: decodedToken.account })
         .then(foundUser => {
           if (!foundUser || foundUser.username !== decodedToken.username) {
-            res.header('Access-Control-Allow-Credentials', 'true')
-            return res.json({ status: 'error', message: 'account is not valid in db' })
+            resHelpers.setHeaders(res)
+            return resHelpers.sendErrorJson(res, 'account is not valid in db')
           }
           const accessToken = jwt.sign(
             decodedToken,
             process.env.ACCESS_TOKEN_SECRET as string,
             jwtOptions.accessTokenOptions
           )
-          res.header('Access-Control-Allow-Credentials', 'true')
+          resHelpers.setHeaders(res)
           res.json({
             status: 'success',
             accessToken
           })
         })
         .catch(err => {
-          res.header('Access-Control-Allow-Credentials', 'true')
-          res.json({
-            status: 'error',
-            message: err
-          })
+          return errorHandler.general(res, err)
         })
     } catch (err) {
-      res.header('Access-Control-Allow-Credentials', 'true')
-      return res.json({ status: 'error', message: 'access token is not valid' })
+      return errorHandler.general(res, err)
     }
   },
   handleLogout(req: Request, res: Response, next: NextFunction) {
@@ -120,16 +100,15 @@ const authController = {
     try {
       const cookies = req.cookies
       if (!cookies?.jwt) {
-        res.header('Access-Control-Allow-Credentials', 'true')
+        resHelpers.setHeaders(res)
         return res.json({ status: 'success', message: 'no content to clear!' })
       }
       const refreshToken = cookies.jwt
       res.clearCookie('jwt', cookieOptions.authRefreshToken)
-      res.header('Access-Control-Allow-Credentials', 'true')
-      res.json({ status: 'success' })
+      resHelpers.setHeaders(res)
+      return res.json({ status: 'success' })
     } catch (err) {
-      res.header('Access-Control-Allow-Credentials', 'true')
-      return res.json({ status: 'error', message: 'access token is not valid' })
+      return errorHandler.general(res, err)
     }
   }
 }
