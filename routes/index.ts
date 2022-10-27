@@ -5,6 +5,7 @@ import configCORS from '../config/cors'
 import usersRoute from './api/users'
 import authRoute from './api/auth'
 import etfRoute from './api/etf'
+import symbols from './api/symbols'
 
 const router: Router = express.Router()
 
@@ -15,7 +16,7 @@ configCORS(router)
 
 router.use('/api/users', usersRoute)
 router.use('/api/auth', authRoute)
-
+router.use('/api/symbols', symbols)
 router.use('/api', etfRoute)
 
 export = router
