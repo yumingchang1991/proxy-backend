@@ -20,7 +20,7 @@ const configCORS = (router: express.Router) => {
   router.route('/api/auth/login').options(cors(corsOptions.withCredentials))
   router.route('/api/auth/logout').options(cors(corsOptions.withCredentials))
   router.route('/api/:etf/eod').options(cors(corsOptions.withCredentials))
-  router.route('/api/symbols').options(cors(corsOptions.withCredentials))
+  router.route('/api/symbols').options(cors(corsOptions.general))
   router.use(cors(corsOptions.general))
 }
 
