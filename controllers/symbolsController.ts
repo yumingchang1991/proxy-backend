@@ -18,6 +18,7 @@ const symbolsController = {
       if (!isAdmin) throw Error('only admin could modify symbols')
       if (!file) throw Error('please upload a file')
     } catch (err: unknown) {
+      console.log('going through line 21 in SymbolsController')
       return errorHandler.general(res, err)
     }
 
@@ -59,6 +60,7 @@ const symbolsController = {
       readable.on('close', () => {
         if (result.length > 0) {
           Symbol.create(result).then(() => {
+            console.log('going through line 63 in SymbolsController')
             result.length = 0
             resHelpers.setHeaders(res)
             return res.json({ status: 'success', message: 'symbols are updated' })
