@@ -14,7 +14,6 @@ export function verifyAdmin (req: Request, res: Response, next: NextFunction) {
       ? true
       : false
   } catch (err: unknown) {
-    console.log('going through line 17 in verifyAdmin')
     return errorHandlers.general(res, err)
   }
   next()

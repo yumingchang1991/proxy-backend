@@ -47,7 +47,9 @@ const symbolsController = {
             result.push({ symbol, name, fees: parseFloat(fees.replace('%', '').trim()) })
           }
           if (result.length >= 300) {
-            Symbol.create(result)
+            Symbol
+              .create(result)
+              .catch(err => errorHandler.general(res, err))
             result.length = 0
           }
         }
@@ -59,12 +61,14 @@ const symbolsController = {
 
       readable.on('close', () => {
         if (result.length > 0) {
-          Symbol.create(result).then(() => {
-            console.log('going through line 63 in SymbolsController')
-            result.length = 0
-            resHelpers.setHeaders(res)
-            return res.json({ status: 'success', message: 'symbols are updated' })
-          })
+          Symbol
+            .create(result)
+            .then(() => {
+              result.length = 0
+              resHelpers.setHeaders(res)
+              return res.json({ status: 'success', message: 'symbols are updated' })
+            })
+            .catch(err => errorHandler.general(res, err))
         }
       })
     }
