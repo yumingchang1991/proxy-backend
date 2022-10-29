@@ -10,6 +10,7 @@ const etfController = {
     const { etf } = req.params
     const symbolDocument = symbolService.getSymbol(res, etf)
     if (!symbolDocument) return errorHandler.general(res, `${etf} is not a valid symbol`)
+    console.log('synbolDocument: ', symbolDocument)
 
     const url = apiURL.eod()
     url.searchParams.set('symbols', etf)
@@ -23,6 +24,7 @@ const etfController = {
       })
       .catch(err => {
         console.log('something wrong in Axios request in etfController')
+        console.error(err)
         return errorHandler.general(res, err)
       })
   }
