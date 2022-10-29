@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express'
+import { Request, Response } from 'express'
 import apiURL from '../config/marketstack'
 import axios from 'axios'
 import resHelpers from '../helpers/resHelpers'
@@ -6,27 +6,27 @@ import errorHandler from '../middlewares/errorHandlers'
 import symbolService from '../services/symbolService'
 
 const etfController = {
-  getEOD (req: Request, res: Response, next: NextFunction) {
+  async getEOD (req: Request, res: Response) {
     const { etf } = req.params
-    const symbolDocument = symbolService.getSymbol(res, etf)
-    if (!symbolDocument) return errorHandler.general(res, `${etf} is not a valid symbol`)
-    console.log('synbolDocument: ', symbolDocument)
+    const symbolDocument = await symbolService.getSymbol(res, etf)
+    if (!symbolDocument) return errorHandler.general(res, `${etf} is not accepted in this application`)
 
     const url = apiURL.eod()
     url.searchParams.set('symbols', etf)
-    axios
-      .get(url.href)
-      .then(marketstackResponse => {
-        const { date, symbol, close, dividend } = marketstackResponse.data.data[0]
-        const result = { date, symbol, close, dividend }
-        resHelpers.setHeaders(res)
-        return res.json(result)
-      })
-      .catch(err => {
-        console.log('something wrong in Axios request in etfController')
-        console.error(err)
-        return errorHandler.general(res, err)
-      })
+
+    let marketstackResponse
+    try {
+      marketstackResponse = await axios.get(url.href)
+    } catch (err) {
+      return errorHandler.general(res, err)
+    }
+    
+    if (!marketstackResponse) return errorHandler.general(res, `no error in axios but marketstack respond with empty result`)
+
+    const { date, symbol, close, dividend } = marketstackResponse.data.data[0]
+    const result = { date, symbol, close, dividend }
+    resHelpers.setHeaders(res)
+    return res.json(result)
   }
 }
 
