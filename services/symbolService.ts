@@ -8,7 +8,7 @@ const symbolService = {
       const symbol = await Symbol.findOne({ symbol: input })
       return symbol
     } catch (err) {
-      errorHandler.general(res, err)
+      errorHandler.general(res, `${input} is not a valid symbol in this application`)
     }
   }
 }
