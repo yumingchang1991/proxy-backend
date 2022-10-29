@@ -22,6 +22,7 @@ const etfController = {
         return res.json(result)
       })
       .catch(err => {
+        console.log('something wrong in Axios request in etfController')
         return errorHandler.general(res, err)
       })
   }
