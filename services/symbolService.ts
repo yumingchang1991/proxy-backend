@@ -3,7 +3,7 @@ import Symbol from "../models/symbol"
 import errorHandler from "../middlewares/errorHandlers"
 
 const symbolService = {
-  async getSymbol (res: Response, input: String) {
+  async getSymbol (res: Response, input: string) {
     try {
       const symbol = await Symbol.findOne({ symbol: input })
       return symbol

@@ -3,9 +3,8 @@ import { Response } from 'express'
 const resHelpers = {
   setHeaders (res: Response) {
     res.header('Access-Control-Allow-Credentials', 'true')
-    // res.header('Access-Control-Allow-Origin', 'https://yumingchang1991.github.io')
   },
-  sendErrorJson (res: Response, errorMessage: String) {
+  sendErrorJson (res: Response, errorMessage: string) {
     res.json({
       status: 'error',
       message: errorMessage

@@ -29,7 +29,7 @@ const symbolsController = {
       })
       
       const result: Array<any> = []
-      let unprocessed: String = ''
+      let unprocessed: string = ''
 
       readable.on('readable', () => {
         const chunk = unprocessed + readable.read()
