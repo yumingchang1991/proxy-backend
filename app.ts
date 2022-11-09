@@ -6,7 +6,6 @@ import expressSession from 'express-session'
 import cookieParser from 'cookie-parser'
 import router from './routes/index'
 import './config/mongoose'
-import './types/verifyJWT'
 
 const app: express.Application = express()
 const PORT: number = Number(process.env.PORT) || 8080
