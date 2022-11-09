@@ -4,10 +4,13 @@ import { Request, Response, NextFunction } from 'express'
 import jwt from 'jsonwebtoken'
 import errorHandler from '../middlewares/errorHandlers'
 import resHelper from '../helpers/resHelpers'
+import { iUserPayload } from 'verifyJWT'
 
-interface iUserPayload {
-  username: string,
-  account: string
+declare module "express-serve-static-core" {
+  interface Request {
+    isAdmin?: boolean,
+    user?: string
+  }
 }
 
 const verifyJWT = (req: Request, res: Response, next: NextFunction) => {
