@@ -17,7 +17,7 @@ const verifyJWT = (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.headers.authorization
   if (!authHeader) {
     resHelper.setHeaders(res)
-    return resHelper.sendErrorJson(res, 'Your access token is invalid')
+    return resHelper.sendErrorJson(res, 'there is no access token', 401)
   }
   
   let token
@@ -27,7 +27,7 @@ const verifyJWT = (req: Request, res: Response, next: NextFunction) => {
     // if there is error, try/catch will catch them
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET as string)
   } catch (err: unknown) {
-    return errorHandler.general(res, 'Your access token is considered manipulated. Please log in again.')
+    return errorHandler.general(res, 'Something wrong, please try to log in again.', 401)
   }
   // if no error, then we cast decodedToken as our interface
   const decodedToken = jwt.decode(token) as iUserPayload
