@@ -7,11 +7,7 @@ import jwtOptions from '../config/jwt'
 import cookieOptions from '../config/cookies'
 import resHelpers from '../helpers/resHelpers'
 import errorHandler from '../middlewares/errorHandlers'
-
-interface iUserPayload {
-  username: string,
-  account: string
-}
+import { iUserPayload } from 'verifyJWT'
 
 const authController = {
   handleLogIn(req: Request, res: Response, next: NextFunction) {
