@@ -59,34 +59,31 @@ const authController = {
       })
 
   },
-  handleRefreshToken(req: Request, res: Response, next: NextFunction) {
+  async handleRefreshToken(req: Request, res: Response, next: NextFunction) {
     try {
       const cookies = req.cookies
       if (!cookies?.jwt) throw Error('no access token')
+
       const refreshToken = cookies.jwt
-      jwt.verify(refreshToken, process.env.ACCESS_TOKEN_SECRET as string)
+      jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET as string)
+
       const decodedToken = jwt.decode(refreshToken) as iUserPayload
-      User
-        .findOne({ account: decodedToken.account })
-        .then(foundUser => {
-          if (!foundUser || foundUser.username !== decodedToken.username) {
-            resHelpers.setHeaders(res)
-            return resHelpers.sendErrorJson(res, 'account is not valid in db')
-          }
-          const accessToken = jwt.sign(
-            decodedToken,
-            process.env.ACCESS_TOKEN_SECRET as string,
-            jwtOptions.accessTokenOptions
-          )
-          resHelpers.setHeaders(res)
-          res.json({
-            status: 'success',
-            accessToken
-          })
-        })
-        .catch(err => {
-          return errorHandler.general(res, err)
-        })
+
+      const foundUser = await User.findOne({ account: decodedToken.account })
+      if (!foundUser || foundUser.username !== decodedToken.username) {
+        throw Error('account is not valid in db')
+      }
+
+      const accessToken = jwt.sign(
+        decodedToken,
+        process.env.ACCESS_TOKEN_SECRET as string,
+        jwtOptions.accessTokenOptions
+      )
+      resHelpers.setHeaders(res)
+      res.json({
+        status: 'success',
+        accessToken
+      })
     } catch (err) {
       return errorHandler.general(res, err)
     }
