@@ -1,6 +1,4 @@
-import express from 'express'
 import request from 'supertest'
-import route from '../routes'
 import app from '../app'
 
 describe('testing ETF Controller', () => {
