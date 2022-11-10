@@ -74,8 +74,12 @@ const authController = {
         throw Error('account is not valid in db')
       }
 
+      const payload = {
+        username: decodedToken.username,
+        account: decodedToken.account
+      }
       const accessToken = jwt.sign(
-        decodedToken,
+        payload,
         process.env.ACCESS_TOKEN_SECRET as string,
         jwtOptions.accessTokenOptions
       )
