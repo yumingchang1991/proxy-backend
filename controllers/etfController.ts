@@ -8,7 +8,13 @@ import symbolService from '../services/symbolService'
 const etfController = {
   async getEOD (req: Request, res: Response) {
     const { etf } = req.params
-    const symbolDocument = await symbolService.getSymbol(res, etf)
+    let symbolDocument
+    try {
+      symbolDocument = await symbolService.getSymbol(etf)
+    } catch (err: unknown) {
+      return errorHandler.general(res, err)
+    }
+    
     if (!symbolDocument) return errorHandler.general(res, `${etf} is not accepted in this application`)
 
     const url = apiURL.eod()
