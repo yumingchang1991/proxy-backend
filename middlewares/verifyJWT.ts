@@ -27,6 +27,9 @@ const verifyJWT = (req: Request, res: Response, next: NextFunction) => {
     // if there is error, try/catch will catch them
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET as string)
   } catch (err: unknown) {
+    if (err instanceof Error) {
+      return errorHandler.general(res, err, 401)  
+    }
     return errorHandler.general(res, 'Something wrong, please try to log in again.', 401)
   }
   // if no error, then we cast decodedToken as our interface
